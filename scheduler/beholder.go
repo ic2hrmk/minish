@@ -138,12 +138,12 @@ func (rcv *beholder) notifyListeners(event scheduler.Event) {
 		wg.Add(1)
 
 		go func() {
-			ctx := context.Background()
-			ctx, cancel := context.WithTimeout(ctx, rcv.notificationTimeout)
-			//ctx, _ = context.WithTimeout(ctx, rcv.notificationTimeout)
-
 			defer wg.Done()
-			defer cancel()
+
+
+			ctx := context.Background()
+			ctx, _ = context.WithTimeout(ctx, rcv.notificationTimeout)
+
 
 			done := make(chan struct{})
 
