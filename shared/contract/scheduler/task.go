@@ -17,11 +17,6 @@ type Task struct {
 	Payload []byte
 }
 
-type Executor interface {
-	Add(ownerID OwnerIdentifier, ttl time.Duration, payload []byte) (TaskIdentifier, error)
-	Cancel(taskID TaskIdentifier) error
-}
-
 func GenerateTaskIdentifier() TaskIdentifier {
 	return TaskIdentifier(uuid.New().String())
 }
