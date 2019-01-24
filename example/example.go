@@ -7,19 +7,29 @@ import (
 	"time"
 
 	"github.com/ic2hrmk/minish/scheduler"
-	subcontract "github.com/ic2hrmk/minish/shared/contract/scheduler"
+	"github.com/ic2hrmk/minish/scheduler/beholder"
 )
 
 func main() {
 	//
-	// Add beholder + some listeners
+	// Add b + some listeners
 	//
-	beholder := scheduler.NewBeholder()
+	b := beholder.NewBeholder()
+
+	beholder.DEBUG = true
+
+	listenerNamed := &TestBeholderConsumer{
+		Identifier: "named",
+	}
+
+	if err := b.AttachNamedListener(listenerNamed.Identifier, listenerNamed); err != nil {
+		panic(err)
+	}
 
 	for i := 0; i < 10; i++ {
 		listener := &TestBeholderConsumer{}
 
-		id, err := beholder.AttachListener(listener)
+		id, err := b.AttachListener(listener)
 		if err != nil {
 			panic("attaching listener error" + err.Error())
 		}
@@ -27,14 +37,14 @@ func main() {
 		listener.Identifier = id
 	}
 
-	taskID, err := beholder.AddTask("roman", 501*time.Millisecond, []byte{0, 1, 2})
+	taskID, err := b.AddTask("roman", 2000*time.Millisecond, []byte{0, 1, 2})
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	fmt.Println("task deployed ->", taskID)
 
-	err = beholder.CancelTask(taskID)
+	err = b.CancelTask(taskID)
 	fmt.Println("task manually canceled")
 	if err != nil {
 		log.Fatal(err)
@@ -44,10 +54,10 @@ func main() {
 }
 
 type TestBeholderConsumer struct {
-	Identifier subcontract.EventListenerIdentifier
+	Identifier scheduler.EventListenerIdentifier
 }
 
-func (rcv *TestBeholderConsumer) Listen(event subcontract.Event) {
+func (rcv *TestBeholderConsumer) Listen(event scheduler.Event) {
 	fmt.Printf("[%s] event received: task [%s], canceled [%t]\n", rcv.Identifier, event.Task.TaskID, event.IsCanceled)
 	sleepTime := time.Duration(rand.Int63n(10)) * time.Second
 
