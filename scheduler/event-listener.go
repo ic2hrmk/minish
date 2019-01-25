@@ -9,9 +9,7 @@ type Event struct {
 
 type EventListenerIdentifier string
 
-type EventListener interface {
-	Listen(event Event)
-}
+type EventListenerMethod func(event Event)
 
 func GenerateEventListenerIdentifier() EventListenerIdentifier {
 	return EventListenerIdentifier(uuid.New().String())

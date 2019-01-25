@@ -109,7 +109,7 @@ func (rcv *beholder) CancelTask(taskID scheduler.TaskIdentifier) error {
 	return nil
 }
 
-func (rcv *beholder) AttachListener(l scheduler.EventListener) (scheduler.EventListenerIdentifier, error) {
+func (rcv *beholder) AttachListener(l scheduler.EventListenerMethod) (scheduler.EventListenerIdentifier, error) {
 	// Create unique listener identifier
 	listenerIdentifier := scheduler.GenerateEventListenerIdentifier()
 
@@ -120,7 +120,7 @@ func (rcv *beholder) AttachListener(l scheduler.EventListener) (scheduler.EventL
 }
 
 func (rcv *beholder) AttachNamedListener(
-	identifier scheduler.EventListenerIdentifier, l scheduler.EventListener,
+	identifier scheduler.EventListenerIdentifier, l scheduler.EventListenerMethod,
 ) (
 	error,
 ) {
@@ -164,7 +164,7 @@ func (rcv *beholder) notifyListeners(event scheduler.Event) {
 
 			go func() {
 				debugLogf("dispatch event to listener  [ID=%s]\n", identifier.(scheduler.EventListenerIdentifier))
-				listener.(scheduler.EventListener).Listen(event)
+				listener.(scheduler.EventListenerMethod)(event)
 
 				debugLogf("listener [ID=%s] ended listen\n", identifier.(scheduler.EventListenerIdentifier))
 				done <- struct{}{}

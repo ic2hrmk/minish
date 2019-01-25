@@ -34,7 +34,7 @@ func TestBeholder_Positive(t *testing.T) {
 
 	listener := &TestBeholderConsumer{}
 
-	if listener.Identifier, err = b.AttachListener(listener); err != nil {
+	if listener.Identifier, err = b.AttachListener(listener.Listen); err != nil {
 		t.Fatal(err)
 	}
 
@@ -55,7 +55,7 @@ func TestBeholderWithNamedListeners_Positive(t *testing.T) {
 		Identifier: "named",
 	}
 
-	if err := b.AttachNamedListener(namedListener.Identifier, namedListener); err != nil {
+	if err := b.AttachNamedListener(namedListener.Identifier, namedListener.Listen); err != nil {
 		t.Fatal(err)
 	}
 
@@ -76,7 +76,7 @@ func TestBeholderWithNamedListeners_PositiveWithTaskCancel(t *testing.T) {
 		Identifier: "named",
 	}
 
-	if err := b.AttachNamedListener(namedListener.Identifier, namedListener); err != nil {
+	if err := b.AttachNamedListener(namedListener.Identifier, namedListener.Listen); err != nil {
 		t.Fatal(err)
 	}
 
@@ -107,11 +107,11 @@ func TestBeholderWithNamedListeners_NegativeAlreadyExists_(t *testing.T) {
 		Identifier: "named",
 	}
 
-	if err := b.AttachNamedListener(namedListenerA.Identifier, namedListenerA); err != nil {
+	if err := b.AttachNamedListener(namedListenerA.Identifier, namedListenerA.Listen); err != nil {
 		t.Fatal(err)
 	}
 
-	if err := b.AttachNamedListener(namedListenerB.Identifier, namedListenerB); err == nil {
+	if err := b.AttachNamedListener(namedListenerB.Identifier, namedListenerB.Listen); err == nil {
 		t.Fatal(err)
 	}
 }
