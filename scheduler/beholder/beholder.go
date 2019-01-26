@@ -46,6 +46,7 @@ func (rcv *beholder) AddTask(
 	// Create task
 	//
 	task := &scheduler.Task{
+		OwnerID: ownerID,
 		TaskID:  scheduler.GenerateTaskIdentifier(),
 		TTL:     ttl,
 		Payload: payload,
